@@ -124,10 +124,17 @@ const Home = () => {
           direction={{ xs: 'column', md: 'row' }} 
           spacing={2} 
           alignItems="center" 
+          // *** THIS ACHIEVES LEFT/RIGHT ALIGNMENT ***
           justifyContent="space-between"
+          // *****************************************
         >
           {/* Filters & Search (Left/Center) */}
-          <Stack direction="row" spacing={2} flexGrow={1} sx={{ width: { xs: '100%', md: 'auto' } }}>
+          <Stack 
+            direction="row" 
+            spacing={2} 
+            flexGrow={1} 
+            sx={{ width: { xs: '100%', md: 'auto' } }}
+          >
             <TextField
               size="small"
               placeholder="Quick search by name..."

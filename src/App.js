@@ -11,6 +11,7 @@ import Dashboard from './pages/Dashboard';
 import CatDetail from './pages/CatDetail';
 import ProtectedRoute from './components/ProtectedRoute';
 import CatForm from './components/CatForm';
+import Footer from './components/Footer';
 
 const theme = createTheme({
   palette: { primary: { main: '#4CAF50' } },
@@ -30,6 +31,7 @@ function App() {
           <Route path="/cats/:id" element={<CatDetail />} />
           <Route path="*" element={<Navigate to="/" />} />
         </Routes>
+        <Footer />
       </Box>
     </ThemeProvider>
   );
