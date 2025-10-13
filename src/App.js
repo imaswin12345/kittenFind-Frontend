@@ -1,24 +1,37 @@
-import logo from './logo.svg';
-import './App.css';
+import React from 'react';
+import { Routes, Route, Navigate } from 'react-router-dom'; // Remove BrowserRouter import
+import { ThemeProvider, createTheme } from '@mui/material/styles';
+import Box from '@mui/material/Box';
+import Navbar from './components/Navbar';
+import Home from './pages/Home';
+import PostCat from './pages/PostCat';
+import Login from './pages/Login';
+import Register from './pages/Register';
+import Dashboard from './pages/Dashboard';
+import CatDetail from './pages/CatDetail';
+import ProtectedRoute from './components/ProtectedRoute';
+import CatForm from './components/CatForm';
+
+const theme = createTheme({
+  palette: { primary: { main: '#4CAF50' } },
+});
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <ThemeProvider theme={theme}>
+      <Box sx={{ minHeight: '100vh', bgcolor: 'background.default' }}>
+        <Navbar />
+        <Routes>  {/* No <Router> here—index.js handles it */}
+          <Route path="/" element={<Home />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/post" element={<ProtectedRoute><CatForm /></ProtectedRoute>} />
+          <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+          <Route path="/cats/:id" element={<CatDetail />} />
+          <Route path="*" element={<Navigate to="/" />} />
+        </Routes>
+      </Box>
+    </ThemeProvider>
   );
 }
 
