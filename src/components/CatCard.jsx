@@ -9,7 +9,7 @@ import {
   Chip, 
   Box,
   useTheme, 
-  Stack,    
+  Stack, 
 } from '@mui/material';
 import { Link } from 'react-router-dom';
 import { LocationOn, CalendarToday, Male, Female } from '@mui/icons-material';
@@ -17,11 +17,12 @@ import { LocationOn, CalendarToday, Male, Female } from '@mui/icons-material';
 function CatCard({ cat, isDashboard = false }) {
   const theme = useTheme();
 
+  // Determine the photo URL, using the base URL for local development
   const firstPhoto = cat.photos && cat.photos.length > 0 
     ? `http://localhost:5000${cat.photos[0]}`
-    : 'https://via.placeholder.com/400x400?text=No+Photo'; // Updated placeholder for square
+    : 'https://via.placeholder.com/400x400?text=No+Photo';
 
-  const genderIcon = cat.gender === 'Male' ? <Male fontSize="small" /> : <Female fontSize="small" />;
+  const genderIcon = cat.gender === 'Male' ? <Male fontSize="small" color="info" /> : <Female fontSize="small" color="error" />;
   
   return (
     <Card 
@@ -30,28 +31,27 @@ function CatCard({ cat, isDashboard = false }) {
         display: 'flex', 
         flexDirection: 'column', 
         borderRadius: 3, 
-        boxShadow: theme.shadows[4],
+        boxShadow: theme.shadows[6], // Slightly deeper shadow for a 'bigger' feel
         transition: 'transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out',
         '&:hover': {
-          transform: 'translateY(-5px)',
-          boxShadow: theme.shadows[8],
+          transform: 'translateY(-6px)', // Increased lift on hover
+          boxShadow: theme.shadows[12],
         },
         overflow: 'hidden',
       }}
     >
       
-      {/* 🖼️ Square Aspect Ratio Enforced Here */}
+      {/* 🖼️ Square Aspect Ratio Enforced Here (1:1) */}
       <Box sx={{ 
         width: '100%', 
         position: 'relative',
-        paddingTop: '100%', // Crucial: This creates the 1:1 aspect ratio (100% of the parent's width)
+        paddingTop: '100%', 
         borderBottom: `1px solid ${theme.palette.divider}`,
       }}>
         <CardMedia
           component="img"
           image={firstPhoto}
           alt={cat.name}
-          // Position absolute makes the image fill the aspect-ratio box created by padding-top
           sx={{ 
             position: 'absolute', 
             top: 0, 
@@ -64,42 +64,46 @@ function CatCard({ cat, isDashboard = false }) {
         />
       </Box>
 
-      {/* Card Content remains the same, filling the remaining height */}
-      <CardContent sx={{ flexGrow: 1, p: 2 }}>
+      {/* Card Content - Improved Readability and Spacing */}
+      <CardContent sx={{ flexGrow: 1, p: 2.5 }}> {/* Increased padding here (p: 2.5) */}
         <Stack direction="row" justifyContent="space-between" alignItems="center" mb={1}>
           <Typography 
             gutterBottom 
-            variant="h6" 
+            variant="h5" // Increased font size for cat name
             component="div" 
-            sx={{ fontWeight: 700, lineHeight: 1.2 }}
+            sx={{ fontWeight: 800, lineHeight: 1.2, color: theme.palette.text.primary }}
           >
             {cat.name}
           </Typography>
           <Chip 
             label={cat.age} 
-            size="small" 
+            size="medium" // Slightly larger chip
             color="primary" 
-            variant="outlined" 
+            variant="filled" // Use filled for more visual weight
             icon={<CalendarToday fontSize="small" />}
           />
         </Stack>
         
-        <Stack direction="row" alignItems="center" spacing={1} mb={0.5}>
-          <LocationOn fontSize="small" color="action" />
-          <Typography variant="body2" color="text.secondary">
-            {cat.location}
-          </Typography>
+        <Stack direction="column" spacing={0.5} mb={1.5}>
+          {/* Location */}
+          <Stack direction="row" alignItems="center" spacing={1}>
+            <LocationOn fontSize="small" color="action" />
+            <Typography variant="body2" color="text.secondary" sx={{ fontWeight: 600 }}>
+              {cat.location}
+            </Typography>
+          </Stack>
+          
+          {/* Gender */}
+          <Stack direction="row" alignItems="center" spacing={1}>
+            {genderIcon}
+            <Typography variant="body2" color="text.secondary">
+              {cat.gender}
+            </Typography>
+          </Stack>
         </Stack>
 
-        <Stack direction="row" alignItems="center" spacing={1} mb={1.5}>
-          {genderIcon}
-          <Typography variant="body2" color="text.secondary">
-            {cat.gender}
-          </Typography>
-        </Stack>
-
-        {/* Short description */}
-        <Box sx={{ minHeight: 40, mb: 1.5 }}>
+        {/* Short description - Ensure it fills space gracefully */}
+        <Box sx={{ minHeight: 45, mb: 1.5 }}>
           <Typography 
             variant="body2" 
             color="text.secondary" 
@@ -112,13 +116,13 @@ function CatCard({ cat, isDashboard = false }) {
               fontStyle: 'italic',
             }}
           >
-            {cat.description || 'No description provided.'}
+            {cat.description || 'No detailed sighting description available.'}
           </Typography>
         </Box>
 
         {!isDashboard && cat.user?.name && (
           <Typography variant="caption" color="text.disabled" sx={{ mt: 1, display: 'block' }}>
-            Posted by: {cat.user.name}
+            Posted by: **{cat.user.name}**
           </Typography>
         )}
 
@@ -130,8 +134,9 @@ function CatCard({ cat, isDashboard = false }) {
           fullWidth 
           variant="contained" 
           color="primary"
+          size="large" // Use large size for a chunkier button
           sx={{ 
-            fontWeight: 600, 
+            fontWeight: 700, 
             py: 1.2, 
             borderRadius: 2,
             transition: 'background-color 0.3s, transform 0.2s',

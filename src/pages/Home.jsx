@@ -11,15 +11,16 @@ import {
   Avatar, 
   InputAdornment,
   useTheme,
-  Stack, // For horizontal alignment
+  Stack, 
   Select, 
   MenuItem, 
   FormControl, 
   InputLabel,
 } from '@mui/material';
 import { LocationOn, AccessTime, Search as SearchIcon, Add, FilterList } from '@mui/icons-material';
+// Assume these imports exist in your project setup
 import { catsApi, authApi } from '../Services/api'; 
-import CatCard from '../components/CatCard'; // Assume CatCard has also been modernized
+import CatCard from '../components/CatCard'; // Make sure this path is correct
 import LoadingSpinner from '../components/LoadingSpinner';
 import ErrorMessage from '../components/ErrorMessage';
 
@@ -30,8 +31,8 @@ const Home = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [search, setSearch] = useState('');
-  const [filterLocation, setFilterLocation] = useState(''); // New state for filter
-  const [filterAge, setFilterAge] = useState('');         // New state for filter
+  const [filterLocation, setFilterLocation] = useState('');
+  const [filterAge, setFilterAge] = useState('');
   const [user, setUser] = useState(null);
   const isLoggedIn = !!localStorage.getItem('token');
 
@@ -64,8 +65,8 @@ const Home = () => {
         cat.location.toLowerCase().includes(search.toLowerCase())
       );
       
-      const locationMatch = filterLocation === '' || cat.location.toLowerCase().includes(filterLocation.toLowerCase());
-      const ageMatch = filterAge === '' || cat.age.toLowerCase() === filterAge.toLowerCase();
+      const locationMatch = filterLocation === '' || (cat.location && cat.location.toLowerCase().includes(filterLocation.toLowerCase()));
+      const ageMatch = filterAge === '' || (cat.age && cat.age.toLowerCase() === filterAge.toLowerCase());
 
       return searchMatch && locationMatch && ageMatch;
     });
@@ -80,42 +81,43 @@ const Home = () => {
   if (loading) return <LoadingSpinner message="Loading the Feline Directory..." />;
 
   return (
-    <Container maxWidth="xl" disableGutters sx={{ minHeight: '100vh' }}> {/* Full width container */}
+    <Container maxWidth="xl" disableGutters sx={{ minHeight: '100vh' }}>
       
       {/* 🌟 Full-Width Minimalist Header */}
       <Box sx={{ 
-        pt: 8, 
-        pb: 4, 
+        pt: { xs: 4, md: 8 }, 
+        pb: { xs: 2, md: 4 }, 
         px: 4,
         textAlign: 'center',
         backgroundColor: theme.palette.mode === 'dark' ? theme.palette.grey[900] : theme.palette.grey[50],
         borderBottom: `1px solid ${theme.palette.divider}`
       }}>
         <Typography 
-          variant="h2" 
+          variant="h3" 
           component="h1"
           sx={{ 
             fontWeight: 900, 
             color: theme.palette.primary.main,
             letterSpacing: -1,
-            mb: 1
+            mb: 1,
+            fontSize: { xs: '2.5rem', md: '3.75rem' } 
           }}
         >
           Lost & Found Felines
         </Typography>
-        <Typography variant="h6" color="text.secondary">
+        <Typography variant="body1" color="text.secondary" sx={{ fontSize: { xs: '1rem', md: '1.25rem' } }}>
           Browse the latest reported sightings or post a missing/found cat report.
         </Typography>
       </Box>
 
-      {/* 🚀 Sticky Advanced Filter Bar and User Actions */}
+      {/* 🚀 Sticky Advanced Filter Bar - Highly Responsive */}
       <Box 
         sx={{ 
           position: 'sticky', 
           top: 0, 
           zIndex: 1000, 
           py: 2, 
-          backgroundColor: theme.palette.background.default, // Ensures it stands out over content
+          backgroundColor: theme.palette.background.default,
           boxShadow: theme.shadows[2], 
           px: 4,
         }}
@@ -124,29 +126,30 @@ const Home = () => {
           direction={{ xs: 'column', md: 'row' }} 
           spacing={2} 
           alignItems="center" 
-          // *** THIS ACHIEVES LEFT/RIGHT ALIGNMENT ***
           justifyContent="space-between"
-          // *****************************************
+          sx={{ width: '100%' }} 
         >
-          {/* Filters & Search (Left/Center) */}
+          {/* Filters & Search */}
           <Stack 
-            direction="row" 
+            direction={{ xs: 'column', sm: 'row' }} 
             spacing={2} 
             flexGrow={1} 
-            sx={{ width: { xs: '100%', md: 'auto' } }}
+            sx={{ width: { xs: '100%', md: 'auto' } }} 
           >
+            {/* Search Field */}
             <TextField
               size="small"
-              placeholder="Quick search by name..."
+              placeholder="Quick search by name or location..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               InputProps={{
                 startAdornment: <InputAdornment position="start"><SearchIcon fontSize="small" /></InputAdornment>,
               }}
-              sx={{ minWidth: 200 }}
+              sx={{ minWidth: 200, width: { xs: '100%', sm: 'auto' } }}
             />
             
-            <FormControl size="small" sx={{ minWidth: 150 }}>
+            {/* Location Filter */}
+            <FormControl size="small" sx={{ minWidth: 150, width: { xs: '100%', sm: 'auto' } }}>
               <InputLabel id="location-select-label">Location</InputLabel>
               <Select
                 labelId="location-select-label"
@@ -161,7 +164,8 @@ const Home = () => {
               </Select>
             </FormControl>
 
-            <FormControl size="small" sx={{ minWidth: 120 }}>
+            {/* Age Filter */}
+            <FormControl size="small" sx={{ minWidth: 120, width: { xs: '100%', sm: 'auto' } }}>
               <InputLabel id="age-select-label">Age</InputLabel>
               <Select
                 labelId="age-select-label"
@@ -178,16 +182,22 @@ const Home = () => {
             </FormControl>
           </Stack>
           
-          {/* Actions (Right) */}
-          <Stack direction="row" spacing={1.5} alignItems="center">
+          {/* Actions */}
+          <Stack 
+            direction="row" 
+            spacing={1.5} 
+            alignItems="center"
+            justifyContent={{ xs: 'space-between', md: 'flex-start' }} 
+            sx={{ width: { xs: '100%', md: 'auto' } }} 
+          >
             {isLoggedIn ? (
               <>
                 <Button 
                   variant="contained" 
-                  size="small"
+                  size="medium" 
                   onClick={() => navigate('/post')}
                   startIcon={<Add />}
-                  sx={{ whiteSpace: 'nowrap' }}
+                  sx={{ whiteSpace: 'nowrap', flexShrink: 0 }}
                 >
                   Post Sighting
                 </Button>
@@ -197,17 +207,28 @@ const Home = () => {
                   color="secondary"
                   size="medium"
                   onClick={() => navigate('/dashboard')} 
-                  sx={{ cursor: 'pointer', fontWeight: 600 }}
+                  sx={{ cursor: 'pointer', fontWeight: 600, flexShrink: 1 }}
                 />
               </>
             ) : (
-              <Button 
-                variant="outlined" 
-                size="small"
-                onClick={() => navigate('/login')}
-              >
-                Log In
-              </Button>
+              <>
+                <Button 
+                  variant="outlined" 
+                  size="medium" 
+                  onClick={() => navigate('/login')}
+                  sx={{ width: { xs: '100%', sm: 'auto', md: 'auto' } }}
+                >
+                  Log In
+                </Button>
+                <Button 
+                  variant="contained" 
+                  size="medium" 
+                  onClick={() => navigate('/register')}
+                  sx={{ width: { xs: '100%', sm: 'auto', md: 'auto' }, display: { xs: 'none', sm: 'inline-flex' } }}
+                >
+                  Register
+                </Button>
+              </>
             )}
           </Stack>
         </Stack>
@@ -225,7 +246,8 @@ const Home = () => {
               bgcolor: theme.palette.mode === 'dark' ? theme.palette.grey[800] : theme.palette.grey[50],
               borderRadius: 3,
               border: `2px dashed ${theme.palette.divider}`,
-              opacity: 0.8
+              opacity: 0.8,
+              m: 2 
             }}
           >
             <Typography variant="h5" gutterBottom color="text.secondary">
@@ -237,8 +259,16 @@ const Home = () => {
           </Box>
         ) : (
           <Grid container spacing={4}>
+            {/* The responsive Grid configuration for 4 cards on desktop: */}
             {filteredCats.map((cat) => (
-              <Grid item xs={12} sm={6} md={4} lg={3} key={cat._id}> {/* Added lg={3} for a denser, modern grid */}
+              <Grid 
+                item 
+                xs={12}    // 1 card per row on mobile
+                sm={6}     // 2 cards per row on small screens
+                md={4}     // 3 cards per row on medium screens
+                lg={3}     // **4 cards per row on large screens** (12 / 3 = 4)
+                key={cat._id}
+              > 
                 <CatCard cat={cat} /> 
               </Grid>
             ))}
