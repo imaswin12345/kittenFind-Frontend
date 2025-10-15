@@ -17,9 +17,9 @@ import { LocationOn, CalendarToday, Male, Female } from '@mui/icons-material';
 function CatCard({ cat, isDashboard = false }) {
   const theme = useTheme();
 
-  // Determine the photo URL, using the base URL for local development
+  // Determine the photo URL using the live backend
   const firstPhoto = cat.photos && cat.photos.length > 0 
-    ? `http://localhost:5000${cat.photos[0]}`
+    ? `https://kittenfind-backend-5.onrender.com${cat.photos[0]}`
     : 'https://via.placeholder.com/400x400?text=No+Photo';
 
   const genderIcon = cat.gender === 'Male' ? <Male fontSize="small" color="info" /> : <Female fontSize="small" color="error" />;
@@ -60,6 +60,9 @@ function CatCard({ cat, isDashboard = false }) {
             height: '100%',
             objectFit: 'cover', 
             objectPosition: 'center',
+          }}
+          onError={(e) => {
+            e.target.src = 'https://via.placeholder.com/400x400?text=Image+Not+Found';
           }}
         />
       </Box>

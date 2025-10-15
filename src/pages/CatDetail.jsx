@@ -18,7 +18,7 @@ function CatDetail() {
   const [cat, setCat] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  const BASE_URL = 'http://localhost:5000'; // update this when deploying
+  const BASE_URL = 'https://kittenfind-backend-5.onrender.com'; // Updated for production
 
   useEffect(() => {
     catsApi
@@ -58,7 +58,7 @@ function CatDetail() {
       </Typography>
 
       <Grid container spacing={3}>
-        {/* Left Side - Images (kept exactly as before) */}
+        {/* Left Side - Images */}
         <Grid item xs={12} md={7}>
           {cat.photos && cat.photos.length > 0 && (
             <ImageList cols={3} sx={{ mb: 2 }}>
@@ -72,6 +72,10 @@ function CatDetail() {
                       height: 'auto',
                       borderRadius: '8px',
                       objectFit: 'cover'
+                    }}
+                    onError={(e) => {
+                      console.error('Image failed to load:', getPhotoUrl(photo));
+                      e.target.src = 'https://via.placeholder.com/300?text=Image+Not+Found';
                     }}
                   />
                 </ImageListItem>
